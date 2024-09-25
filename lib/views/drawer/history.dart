@@ -1,10 +1,7 @@
 import 'dart:io';
 import 'package:adaptive_theme/adaptive_theme.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:open_filex/open_filex.dart';
-import 'package:photon/components/constants.dart';
 import 'package:photon/components/snackbar.dart';
 import 'package:photon/methods/methods.dart';
 import 'package:photon/models/share_history_model.dart';
@@ -12,7 +9,7 @@ import 'package:photon/services/file_services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HistoryPage extends StatefulWidget {
-  const HistoryPage({Key? key}) : super(key: key);
+  const HistoryPage({super.key});
 
   @override
   State<HistoryPage> createState() => _HistoryPageState();

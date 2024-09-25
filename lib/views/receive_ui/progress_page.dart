@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
-import 'package:graphic/graphic.dart';
 import 'package:lottie/lottie.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:photon/components/snackbar.dart';
@@ -19,7 +18,6 @@ import '../../components/progress_line.dart';
 import '../../methods/methods.dart';
 import '../../models/sender_model.dart';
 import '../../services/file_services.dart';
-import 'package:path/path.dart' as p;
 
 class ProgressPage extends StatefulWidget {
   final SenderModel? senderModel;

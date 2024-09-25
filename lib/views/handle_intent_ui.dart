@@ -22,9 +22,7 @@ class _HandleIntentUIState extends State<HandleIntentUI> {
         title: Text("Share ${widget.isRawText! ? 'text' : 'files'}"),
       ),
       body: FutureBuilder(
-        future: widget.isRawText!
-            ? ReceiveSharingIntent.getInitialText()
-            : ReceiveSharingIntent.getInitialMedia(),
+        future: ReceiveSharingIntent.instance.getInitialMedia(),
         builder: (context, AsyncSnapshot snap) {
           isLoading = false;
           if (snap.connectionState == ConnectionState.done) {

@@ -15,7 +15,7 @@ class AppsList extends StatefulWidget {
 
 class _AppsListState extends State<AppsList> {
   final future = DeviceApps.getInstalledApplications(includeAppIcons: true);
-  List<ApplicationWithIcon> apps = <ApplicationWithIcon>[];
+  List apps = [];
   List<String> paths = [];
   TextEditingController searchController = TextEditingController();
   List<Application> searchData = [];
@@ -58,7 +58,7 @@ class _AppsListState extends State<AppsList> {
                       );
                     });
               },
-              icon: Icon(Icons.search))
+              icon: const Icon(Icons.search))
         ],
       ),
       body: FutureBuilder(
@@ -67,8 +67,8 @@ class _AppsListState extends State<AppsList> {
             if (snap.connectionState == ConnectionState.done) {
               data = snap.data;
               apps = isSearched
-                  ? searchData.cast<ApplicationWithIcon>()
-                  : data.cast<ApplicationWithIcon>();
+                  ? searchData
+                  : data;
               //create list of bool
               List<bool> boolList = List.generate(apps.length, (i) => false);
 

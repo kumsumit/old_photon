@@ -18,7 +18,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 2.0.0+8
 
 environment:
-  sdk: ">=3.0.0 <=3.18.0-0.2.pre"
+  sdk: ">=3.5.0 <=4.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -39,7 +39,7 @@ dependencies:
   unicons:
   dio: ^5.1.1
   path_provider: ^2.0.11
-  get_it: ^7.2.0
+  get_it: ^8.0.0
   get:
   path: ^1.8.1
   animated_splash_screen:
@@ -47,9 +47,9 @@ dependencies:
   url_launcher: ^6.1.5
   page_transition:
   shared_preferences: ^2.0.15
-  introduction_screen: ^3.0.2
+  introduction_screen: ^3.1.14
   mailto: ^2.0.0 
-  receive_sharing_intent: ^1.4.5
+  receive_sharing_intent: ^1.8.0
   modal_bottom_sheet: 
   flutter_displaymode: ^0.6.0
   adaptive_theme: 
@@ -57,6 +57,7 @@ dependencies:
   stop_watch_timer:
   flutter_markdown:
   device_apps: 
+    git: https://github.com/sumitsharansatsangi/flutter_plugin_device_apps.git
   http:
   provider:
   file_picker:
@@ -79,10 +80,6 @@ dependencies:
   qr_flutter: ^4.0.0
   qrscan:
   graphic: ^2.2.1
- 
-
- 
-
 
 dev_dependencies:
   flutter_test:
@@ -93,11 +90,15 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
-  flutter_distributor: 
+  flutter_lints: ^4.0.0
+  # flutter_distributor: ^0.4.5
   build_runner:
   change_app_package_name: 
-  msix: ^2.8.18
+  # msix: ^3.16.8
+
+dependency_overrides:
+  plugin_platform_interface:
+    git: https://github.com/kumsumit/plugin_platform_interface.git
 
 
 # For information on the generic Dart part of this file, see the

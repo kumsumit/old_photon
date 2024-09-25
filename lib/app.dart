@@ -18,7 +18,7 @@ import 'views/drawer/history.dart';
 import 'views/home/mobile_home.dart';
 
 class App extends StatefulWidget {
-  const App({Key? key}) : super(key: key);
+  const App({super.key});
 
   @override
   State<App> createState() => _AppState();
@@ -142,7 +142,11 @@ class _AppState extends State<App> {
                         ListTile(
                           leading: SvgPicture.asset(
                             'assets/icons/licenses.svg',
-                            color: mode.isLight ? Colors.black : Colors.white,
+                         colorFilter: ColorFilter.mode(
+                            mode.isDark
+                                ? Colors.white
+                                : Colors.black,
+                            BlendMode.srcIn),
                           ),
                           onTap: () {
                             showLicensePage(
@@ -176,7 +180,7 @@ class _AppState extends State<App> {
                                 color: mode.isDark ? null : Colors.black),
                             onTap: () async {
                               await FileMethods.clearCache();
-                              if (mounted) {
+                              if (mounted && context.mounted) {
                                 Navigator.of(context).pop();
                                 showSnackBar(context, "Cache cleared");
                               }

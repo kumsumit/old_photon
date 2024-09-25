@@ -24,11 +24,11 @@ class ProgressPage extends StatefulWidget {
   final int secretCode;
   final String dataType;
   const ProgressPage({
-    Key? key,
+    super.key,
     required this.senderModel,
     required this.secretCode,
     required this.dataType,
-  }) : super(key: key);
+  });
 
   @override
   State<ProgressPage> createState() => _ProgressPageState();

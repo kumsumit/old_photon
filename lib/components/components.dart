@@ -1,4 +1,3 @@
-import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:unicons/unicons.dart';
 
@@ -17,7 +16,7 @@ infoList(
     ),
     if (!sender && senderModel.avatar != null) ...{
       Padding(
-          padding: EdgeInsets.only(left: 8.0),
+          padding: const EdgeInsets.only(left: 8.0),
           child: Image.memory(
             senderModel.avatar!,
             width: 24,

@@ -12,7 +12,8 @@ import '../services/photon_sender.dart';
 
 void privacyPolicyDialog(BuildContext context, String data) async {
   SharedPreferences prefInst = await SharedPreferences.getInstance();
-  showDialog(
+  if(context.mounted ) {
+    showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
@@ -42,11 +43,13 @@ void privacyPolicyDialog(BuildContext context, String data) async {
           ],
         );
       });
+  }
 }
 
 progressPageAlertDialog(BuildContext context) async {
   SharedPreferences prefInst = await SharedPreferences.getInstance();
-  showDialog(
+  if(context.mounted) {
+    showDialog(
     context: context,
     builder: (context) {
       return AlertDialog(
@@ -75,6 +78,7 @@ progressPageAlertDialog(BuildContext context) async {
       );
     },
   );
+  }
 }
 
 progressPageWillPopDialog(context) async {

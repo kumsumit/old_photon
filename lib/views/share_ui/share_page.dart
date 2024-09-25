@@ -14,7 +14,7 @@ import '../../components/components.dart';
 
 class SharePage extends StatefulWidget {
   final bool? isRawText;
-  const SharePage({Key? key, this.isRawText}) : super(key: key);
+  const SharePage({super.key, this.isRawText});
 
   @override
   State<SharePage> createState() => _SharePageState();

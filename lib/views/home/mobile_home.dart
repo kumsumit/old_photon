@@ -10,7 +10,7 @@ import 'package:photon/views/apps_list.dart';
 import '../../methods/handle_share.dart';
 
 class MobileHome extends StatefulWidget {
-  const MobileHome({Key? key}) : super(key: key);
+  const MobileHome({super.key});
 
   @override
   State<MobileHome> createState() => _MobileHomeState();
@@ -186,7 +186,7 @@ class _MobileHomeState extends State<MobileHome> {
                                           children: [
                                             const Text("Share text"),
                                             IconButton(
-                                              icon: Icon(Icons.close),
+                                              icon: const Icon(Icons.close),
                                               onPressed: () {
                                                 Navigator.of(context).pop();
                                               },

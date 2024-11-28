@@ -7,7 +7,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:photon/components/snackbar.dart';
 import 'package:photon/db/fastdb.dart';
 import 'package:photon/services/file_services.dart';
-import 'package:photon/views/drawer/about_page.dart';
+// import 'package:photon/views/drawer/about_page.dart';
 import 'package:photon/views/drawer/settings.dart';
 import 'package:photon/views/home/widescreen_home.dart';
 import 'package:unicons/unicons.dart';

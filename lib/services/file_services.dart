@@ -5,10 +5,10 @@ import 'dart:math';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
-import 'package:hive/hive.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart' as path;
 import 'package:path_provider/path_provider.dart';
+import 'package:photon/db/fastdb.dart';
 
 import 'package:photon/models/file_model.dart';
 
@@ -106,15 +106,14 @@ class FileMethods {
     return fileNames;
   }
 
-  static editDirectoryPath(String path) {
-    var box = Hive.box('appData');
-    box.put('directoryPath', path);
+  static editDirectoryPath(String path) async {
+    FastDB.putDirectoryPath(path);
+    await FastDB.flush();
   }
 
   static Future<Directory> getSaveDirectory() async {
     late Directory directory;
-    var box = Hive.box('appData');
-    if (box.get('directoryPath') == null) {
+    if (FastDB.getDirectoryPath() == null) {
       switch (Platform.operatingSystem) {
         case "android":
           var temp = Directory('/storage/emulated/0/Download/');
@@ -137,7 +136,7 @@ class FileMethods {
           debugPrint("Unable to get file-save path");
       }
     } else {
-      directory = Directory(box.get('directoryPath'));
+      directory = Directory(FastDB.getDirectoryPath()??"");
     }
 
     var tempDir = directory;

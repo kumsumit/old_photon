@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:hive/hive.dart';
+import 'package:photon/db/fastdb.dart';
 import 'package:photon/methods/methods.dart';
 import 'package:photon/models/sender_model.dart';
 import 'package:photon/services/file_services.dart';
@@ -15,7 +15,6 @@ import 'package:http/http.dart' as http;
 class PhotonReceiver {
   static late int _secretCode;
   static late Map<String, dynamic> filePathMap;
-  static final Box _box = Hive.box('appData');
   static late int id;
   static int totalTime = 0;
 
@@ -83,8 +82,8 @@ class PhotonReceiver {
   }
 
   static isRequestAccepted(SenderModel senderModel) async {
-    String username = _box.get('username');
-    var avatar = await rootBundle.load(_box.get('avatarPath'));
+    String username = FastDB.getUsername()??'';
+    var avatar = await rootBundle.load(FastDB.getAvatarPath()??'');
     var resp = await http.get(
         Uri.parse('http://${senderModel.ip}:${senderModel.port}/get-code'),
         headers: {
@@ -105,7 +104,7 @@ class PhotonReceiver {
       headers: {
         "receiverID": id.toString(),
         "os": Platform.operatingSystem,
-        "hostName": _box.get('username'),
+        "hostName": FastDB.getUsername()??'',
         "currentFile": '${fileIndex + 1}',
         "isCompleted": '$isCompleted',
       },
@@ -239,7 +238,7 @@ class PhotonReceiver {
       getInstance.speed.value = 0.0;
       //after completion of download mark it as true
       getInstance.isReceived[fileIndex].value = true;
-      storeHistory(_box, savePath);
+      storeHistory(savePath);
       getInstance.fileStatus[fileIndex].value = "downloaded";
     } catch (e) {
       getInstance.speed.value = 0;

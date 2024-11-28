@@ -4,8 +4,8 @@ import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:hive/hive.dart';
 import 'package:photon/components/snackbar.dart';
+import 'package:photon/db/fastdb.dart';
 import 'package:photon/services/file_services.dart';
 import 'package:photon/views/drawer/about_page.dart';
 import 'package:photon/views/drawer/settings.dart';
@@ -31,7 +31,6 @@ class _AppState extends State<App> {
     super.initState();
   }
 
-  Box box = Hive.box('appData');
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -87,14 +86,14 @@ class _AppState extends State<App> {
                           child: Column(
                             children: [
                               Image.asset(
-                                box.get('avatarPath'),
+                                FastDB.getAvatarPath()??'',
                                 width: 90,
                                 height: 90,
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
-                                  box.get('username'),
+                                  FastDB.getUsername()??'',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     overflow: TextOverflow.ellipsis,
@@ -142,11 +141,9 @@ class _AppState extends State<App> {
                         ListTile(
                           leading: SvgPicture.asset(
                             'assets/icons/licenses.svg',
-                         colorFilter: ColorFilter.mode(
-                            mode.isDark
-                                ? Colors.white
-                                : Colors.black,
-                            BlendMode.srcIn),
+                            colorFilter: ColorFilter.mode(
+                                mode.isDark ? Colors.white : Colors.black,
+                                BlendMode.srcIn),
                           ),
                           onTap: () {
                             showLicensePage(
@@ -187,20 +184,20 @@ class _AppState extends State<App> {
                             },
                           ),
                         },
-                        ListTile(
-                          title: const Text('About'),
-                          leading: Icon(UniconsLine.info_circle,
-                              color: mode.isDark ? null : Colors.black),
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return const AboutPage();
-                                },
-                              ),
-                            );
-                          },
-                        ),
+                        // ListTile(
+                        //   title: const Text('About'),
+                        //   leading: Icon(UniconsLine.info_circle,
+                        //       color: mode.isDark ? null : Colors.black),
+                        //   onTap: () {
+                        //     Navigator.of(context).push(
+                        //       MaterialPageRoute(
+                        //         builder: (context) {
+                        //           return const AboutPage();
+                        //         },
+                        //       ),
+                        //     );
+                        //   },
+                        // ),
                       ],
                     ),
                     Positioned(

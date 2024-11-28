@@ -46,7 +46,6 @@ dependencies:
   flex_color_scheme:
   url_launcher: ^6.1.5
   page_transition:
-  shared_preferences: ^2.0.15
   introduction_screen: ^3.1.14
   mailto: ^2.0.0 
   receive_sharing_intent: ^1.8.0
@@ -74,9 +73,7 @@ dependencies:
   # open_file:
   #   git:
   #     url: https://github.com/abhi16180/open_file.git
-  hive: ^2.2.3
   permission_handler: ^11.1.0
-  
   qr_flutter: ^4.0.0
   qrscan:
   graphic: ^2.2.1
@@ -90,7 +87,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^4.0.0
+  flutter_lints: ^5.0.0
   # flutter_distributor: ^0.4.5
   build_runner:
   change_app_package_name: 

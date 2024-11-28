@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:get_it/get_it.dart';
+import 'package:photon/db/fastdb.dart';
 import 'package:photon/main.dart';
-
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart' as ulaunch;
 
 import '../app.dart';
@@ -11,84 +10,81 @@ import '../controllers/controllers.dart';
 import '../services/photon_sender.dart';
 
 void privacyPolicyDialog(BuildContext context, String data) async {
-  SharedPreferences prefInst = await SharedPreferences.getInstance();
-  if(context.mounted ) {
+  if (context.mounted) {
     showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: prefInst.getBool('isDarkTheme') == true
-              ? const Color.fromARGB(255, 27, 32, 35)
-              : Colors.white,
-          title: const Text('Privacy policy'),
-          content: SizedBox(
-              height: MediaQuery.of(context).size.height / 2,
-              width: MediaQuery.of(context).size.height / 1.2,
-              child: Markdown(
-                  listItemCrossAxisAlignment:
-                      MarkdownListItemCrossAxisAlignment.start,
-                  data: data)),
-          actions: [
-            ElevatedButton(
-                onPressed: () async {
-                  await ulaunch.launchUrl(Uri.parse(
-                      'https://github.com/abhi16180/photon-file-transfer'));
-                },
-                child: const Text('Source-code')),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('Okay'))
-          ],
-        );
-      });
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            backgroundColor: FastDB.getIsDarkTheme() == true
+                ? const Color.fromARGB(255, 27, 32, 35)
+                : Colors.white,
+            title: const Text('Privacy policy'),
+            content: SizedBox(
+                height: MediaQuery.of(context).size.height / 2,
+                width: MediaQuery.of(context).size.height / 1.2,
+                child: Markdown(
+                    listItemCrossAxisAlignment:
+                        MarkdownListItemCrossAxisAlignment.start,
+                    data: data)),
+            actions: [
+              ElevatedButton(
+                  onPressed: () async {
+                    await ulaunch.launchUrl(Uri.parse(
+                        'https://github.com/abhi16180/photon-file-transfer'));
+                  },
+                  child: const Text('Source-code')),
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Okay'))
+            ],
+          );
+        });
   }
 }
 
 progressPageAlertDialog(BuildContext context) async {
-  SharedPreferences prefInst = await SharedPreferences.getInstance();
-  if(context.mounted) {
+  if (context.mounted) {
     showDialog(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        backgroundColor: prefInst.getBool('isDarkTheme') == true
-            ? const Color.fromARGB(255, 27, 32, 35)
-            : Colors.white,
-        title: const Text('Alert'),
-        content: const Text('Make sure that transfer is completed !'),
-        actions: [
-          ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: FastDB.getIsDarkTheme()==true
+              ? const Color.fromARGB(255, 27, 32, 35)
+              : Colors.white,
+          title: const Text('Alert'),
+          content: const Text('Make sure that transfer is completed !'),
+          actions: [
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Stay')),
+            ElevatedButton(
+              onPressed: () async {
+                // ignore: use_build_context_synchronously
+                GetIt.I.get<PercentageController>().totalTimeElapsed.value = 0;
+                GetIt.I.get<PercentageController>().isFinished.value = false;
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                    '/home', (Route<dynamic> route) => false);
               },
-              child: const Text('Stay')),
-          ElevatedButton(
-            onPressed: () async {
-              // ignore: use_build_context_synchronously
-              GetIt.I.get<PercentageController>().totalTimeElapsed.value = 0;
-              GetIt.I.get<PercentageController>().isFinished.value = false;
-              Navigator.of(context).pushNamedAndRemoveUntil(
-                  '/home', (Route<dynamic> route) => false);
-            },
-            child: const Text('Go back'),
-          )
-        ],
-      );
-    },
-  );
+              child: const Text('Go back'),
+            )
+          ],
+        );
+      },
+    );
   }
 }
 
 progressPageWillPopDialog(context) async {
-  SharedPreferences prefInst = await SharedPreferences.getInstance();
   bool willPop = false;
   await showDialog(
     context: context,
     builder: (context) {
       return AlertDialog(
-        backgroundColor: prefInst.getBool('isDarkTheme') == true
+        backgroundColor: FastDB.getIsDarkTheme() == true
             ? const Color.fromARGB(255, 27, 32, 35)
             : Colors.white,
         title: const Text('Alert'),
@@ -101,13 +97,10 @@ progressPageWillPopDialog(context) async {
               },
               child: const Text('Stay')),
           ElevatedButton(
-            onPressed: () async {
+            onPressed: () {
               willPop = true;
-
-              // ignore: use_build_context_synchronously
               GetIt.I.get<PercentageController>().totalTimeElapsed.value = 0;
               GetIt.I.get<PercentageController>().isFinished.value = false;
-
               Navigator.of(context).pushNamedAndRemoveUntil(
                   '/home', (Route<dynamic> route) => false);
             },
@@ -121,12 +114,11 @@ progressPageWillPopDialog(context) async {
 }
 
 sharePageAlertDialog(BuildContext context) async {
-  SharedPreferences prefInst = await SharedPreferences.getInstance();
   showDialog(
     context: context,
     builder: (context) {
       return AlertDialog(
-        backgroundColor: prefInst.getBool('isDarkTheme') == true
+        backgroundColor: FastDB.getIsDarkTheme() == true
             ? const Color.fromARGB(255, 27, 32, 35)
             : Colors.white,
         title: const Text('Server alert'),
@@ -138,11 +130,12 @@ sharePageAlertDialog(BuildContext context) async {
           ElevatedButton(
             onPressed: () async {
               await PhotonSender.closeServer(context);
-              // ignore: use_build_context_synchronously
               GetIt.I.get<ReceiverDataController>().receiverMap.clear();
-              Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => const App()),
-                  (route) => false);
+              if (context.mounted) {
+                Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (context) => const App()),
+                    (route) => false);
+              }
             },
             child: const Text('Terminate'),
           )
@@ -154,12 +147,11 @@ sharePageAlertDialog(BuildContext context) async {
 
 sharePageWillPopDialog(context) async {
   bool willPop = false;
-  SharedPreferences prefInst = await SharedPreferences.getInstance();
   await showDialog(
     context: context,
     builder: (context) {
       return AlertDialog(
-        backgroundColor: prefInst.getBool('isDarkTheme') == true
+        backgroundColor: FastDB.getIsDarkTheme() == true
             ? const Color.fromARGB(255, 27, 32, 35)
             : Colors.white,
         title: const Text('Server alert'),
@@ -176,11 +168,9 @@ sharePageWillPopDialog(context) async {
             onPressed: () async {
               await PhotonSender.closeServer(context);
               willPop = true;
-              // ignore: use_build_context_synchronously
-              Navigator.of(context).pop();
-              // Navigator.of(context).pushAndRemoveUntil(
-              //     MaterialPageRoute(builder: (context) => const App()),
-              //     (route) => false);
+              if (context.mounted) {
+                Navigator.of(context).pop();
+              }
             },
             child: const Text('Terminate'),
           )
@@ -196,13 +186,12 @@ senderRequestDialog(
   String os,
 ) async {
   bool allowRequest = false;
-  SharedPreferences prefInst = await SharedPreferences.getInstance();
 
   await showDialog(
       context: nav.currentContext!,
       builder: (context) {
         return AlertDialog(
-          backgroundColor: prefInst.getBool('isDarkTheme') == true
+          backgroundColor: FastDB.getIsDarkTheme() == true
               ? const Color.fromARGB(255, 27, 32, 35)
               : Colors.white,
           title: const Text('Request from receiver'),
@@ -230,97 +219,96 @@ senderRequestDialog(
   return allowRequest;
 }
 
-credits(context) async {
-  SharedPreferences prefInst = await SharedPreferences.getInstance();
-  showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: prefInst.getBool('isDarkTheme') == true
-              ? const Color.fromARGB(255, 27, 32, 35)
-              : Colors.white,
-          title: const Text('Credits'),
-          content: SizedBox(
-            width: MediaQuery.of(context).size.width / 2,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text('Icons'),
-                GestureDetector(
-                  onTap: () {
-                    ulaunch.launchUrl(Uri.parse('https://www.svgrepo.com'));
-                  },
-                  child: const Text(
-                    'https://www.svgrepo.com/',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      decoration: TextDecoration.underline,
-                      color: Colors.blue,
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                const Text('Animations'),
-                GestureDetector(
-                  onTap: () {
-                    ulaunch.launchUrl(Uri.parse('https://lottiefiles.com/'));
-                  },
-                  child: const Text(
-                    'https://lottiefiles.com/',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      decoration: TextDecoration.underline,
-                      color: Colors.blue,
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                const Text('Fonts\nYftoowhy', textAlign: TextAlign.center),
-                GestureDetector(
-                  onTap: () {
-                    ulaunch.launchUrl(Uri.parse(
-                        'https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL'));
-                  },
-                  child: const Text(
-                    """ Font license""",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      decoration: TextDecoration.underline,
-                      color: Colors.blue,
-                    ),
-                  ),
-                ),
-                const Text('\nQuestrial', textAlign: TextAlign.center),
-                GestureDetector(
-                  onTap: () {
-                    ulaunch.launchUrl(
-                        Uri.parse('https://github.com/googlefonts/questrial'));
-                  },
-                  child: const Text(
-                    """ Font license""",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      decoration: TextDecoration.underline,
-                      color: Colors.blue,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          actionsAlignment: MainAxisAlignment.end,
-          actions: [
-            IconButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              icon: const Icon(Icons.close),
-            )
-          ],
-        );
-      });
-}
+// credits(context) async {
+//   showDialog(
+//       context: context,
+//       builder: (context) {
+//         return AlertDialog(
+//           backgroundColor:FastDB.getIsDarkTheme() == true
+//               ? const Color.fromARGB(255, 27, 32, 35)
+//               : Colors.white,
+//           title: const Text('Credits'),
+//           content: SizedBox(
+//             width: MediaQuery.of(context).size.width / 2,
+//             child: Column(
+//               mainAxisSize: MainAxisSize.min,
+//               children: [
+//                 const Text('Icons'),
+//                 GestureDetector(
+//                   onTap: () {
+//                     ulaunch.launchUrl(Uri.parse('https://www.svgrepo.com'));
+//                   },
+//                   child: const Text(
+//                     'https://www.svgrepo.com/',
+//                     textAlign: TextAlign.center,
+//                     style: TextStyle(
+//                       decoration: TextDecoration.underline,
+//                       color: Colors.blue,
+//                     ),
+//                   ),
+//                 ),
+//                 const SizedBox(
+//                   height: 20,
+//                 ),
+//                 const Text('Animations'),
+//                 GestureDetector(
+//                   onTap: () {
+//                     ulaunch.launchUrl(Uri.parse('https://lottiefiles.com/'));
+//                   },
+//                   child: const Text(
+//                     'https://lottiefiles.com/',
+//                     textAlign: TextAlign.center,
+//                     style: TextStyle(
+//                       decoration: TextDecoration.underline,
+//                       color: Colors.blue,
+//                     ),
+//                   ),
+//                 ),
+//                 const SizedBox(
+//                   height: 20,
+//                 ),
+//                 const Text('Fonts\nYftoowhy', textAlign: TextAlign.center),
+//                 GestureDetector(
+//                   onTap: () {
+//                     ulaunch.launchUrl(Uri.parse(
+//                         'https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL'));
+//                   },
+//                   child: const Text(
+//                     """ Font license""",
+//                     textAlign: TextAlign.center,
+//                     style: TextStyle(
+//                       decoration: TextDecoration.underline,
+//                       color: Colors.blue,
+//                     ),
+//                   ),
+//                 ),
+//                 const Text('\nQuestrial', textAlign: TextAlign.center),
+//                 GestureDetector(
+//                   onTap: () {
+//                     ulaunch.launchUrl(
+//                         Uri.parse('https://github.com/googlefonts/questrial'));
+//                   },
+//                   child: const Text(
+//                     """ Font license""",
+//                     textAlign: TextAlign.center,
+//                     style: TextStyle(
+//                       decoration: TextDecoration.underline,
+//                       color: Colors.blue,
+//                     ),
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ),
+//           actionsAlignment: MainAxisAlignment.end,
+//           actions: [
+//             IconButton(
+//               onPressed: () {
+//                 Navigator.of(context).pop();
+//               },
+//               icon: const Icon(Icons.close),
+//             )
+//           ],
+//         );
+//       });
+// }

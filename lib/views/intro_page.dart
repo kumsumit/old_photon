@@ -4,11 +4,10 @@ import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:hive/hive.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:lottie/lottie.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import "package:permission_handler/permission_handler.dart";
+import 'package:photon/db/fastdb.dart';
 
 class IntroPage extends StatefulWidget {
   const IntroPage({super.key});
@@ -19,7 +18,6 @@ class IntroPage extends StatefulWidget {
 
 class _IntroPageState extends State<IntroPage> {
   List<bool> selected = List.generate(4, (index) => false);
-  Box box = Hive.box('appData');
   TextEditingController usernameController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -33,22 +31,19 @@ class _IntroPageState extends State<IntroPage> {
               pages: getPages(),
               onDone: () async {
                 if (usernameController.text.trim() != '') {
-                  box.put('username', usernameController.text.trim());
+                  FastDB.putUsername(usernameController.text.trim());
                 }
                 if (Platform.isAndroid || Platform.isIOS) {
                   var _ = await Permission.storage.request();
-                  SharedPreferences prefInst =
-                      await SharedPreferences.getInstance();
-                  prefInst.setBool('isIntroRead', true);
-                  Navigator.of(context).pushReplacementNamed('/home');
+                  FastDB.putIsIntroRead(true);
+                  if(context.mounted) {
+                    Navigator.of(context).pushReplacementNamed('/home');
+                  }
                 } else {
-                  SharedPreferences prefInst =
-                      await SharedPreferences.getInstance();
-                  prefInst.setBool('isIntroRead', true);
-
-                  // ignore: use_build_context_synchronously
+                  FastDB.putIsIntroRead(true);
                   Navigator.of(context).pushReplacementNamed('/home');
                 }
+                await FastDB.flush();
               },
               showSkipButton: false,
               skipOrBackFlex: 0,
@@ -186,7 +181,7 @@ class _IntroPageState extends State<IntroPage> {
                               setState(() {
                                 selected.fillRange(0, 4, false);
                                 selected[index] = true;
-                                box.put('avatarPath',
+                                FastDB.putAvatarPath(
                                     'assets/avatars/${index + 1}.png');
                               });
                             },
@@ -202,7 +197,7 @@ class _IntroPageState extends State<IntroPage> {
                                       right: 5,
                                       child: SvgPicture.asset(
                                         'assets/icons/right_mark.svg',
-                                        color: Colors.white,
+                                        colorFilter: ColorFilter.mode( Colors.white, BlendMode.srcIn,),
                                         width: 30,
                                       ),
                                     )

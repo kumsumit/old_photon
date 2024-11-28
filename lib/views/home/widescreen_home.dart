@@ -3,8 +3,8 @@ import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:hive/hive.dart';
 import 'package:lottie/lottie.dart';
+import 'package:photon/db/fastdb.dart';
 import 'package:photon/methods/handle_share.dart';
 import '../../services/photon_sender.dart';
 import '../apps_list.dart';
@@ -18,7 +18,6 @@ class WidescreenHome extends StatefulWidget {
 
 class _WidescreenHomeState extends State<WidescreenHome> {
   bool isLoading = false;
-  Box box = Hive.box('appData');
   TextEditingController rawTextController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -108,7 +107,7 @@ class _WidescreenHomeState extends State<WidescreenHome> {
                                             205, 117, 255, 122)
                                         : Colors.blue,
                                     onPressed: () async {
-                                      if (box.get('queryPackages')) {
+                                      if ( FastDB.getQueryPackages()??false) {
                                         Navigator.of(context).push(
                                             MaterialPageRoute(
                                                 builder: (context) =>
@@ -130,13 +129,13 @@ class _WidescreenHomeState extends State<WidescreenHome> {
                                                   child: const Text('Go back'),
                                                 ),
                                                 ElevatedButton(
-                                                  onPressed: () {
-                                                    box.put(
-                                                        'queryPackages', true);
-
+                                                  onPressed: () async{
+                                                    FastDB.putQueryPackages(true);
+                                                    await FastDB.flush();
+                                                    if(context.mounted){
                                                     Navigator.of(context)
                                                         .popAndPushNamed(
-                                                            '/apps');
+                                                            '/apps');}
                                                   },
                                                   child: const Text('Continue'),
                                                 )
@@ -153,7 +152,7 @@ class _WidescreenHomeState extends State<WidescreenHome> {
                                       children: [
                                         SvgPicture.asset(
                                           'assets/icons/android.svg',
-                                          color: Colors.black,
+                                        colorFilter: ColorFilter.mode( Colors.black, BlendMode.srcIn, ),
                                         ),
                                         const SizedBox(
                                           width: 10,

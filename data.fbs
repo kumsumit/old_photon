@@ -1,0 +1,17 @@
+table Info{
+  file_path: string;
+  date: string;
+}
+
+table User {
+  username: string;
+  avatar_path: string;
+  sent_history: [Info];
+  file_info: [Info];
+  is_intro_read: bool;
+  query_packages: bool;
+  is_dark_theme: bool;
+  directory_path: string;
+}
+
+root_type User;

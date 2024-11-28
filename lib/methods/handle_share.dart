@@ -9,16 +9,17 @@ class HandleShare {
   HandleShare({required this.context});
   onNormalScanTap() async {
     getIP().then((value) async {
-      if (value.isNotEmpty) {
+      if (value.isNotEmpty && context.mounted) {
         Navigator.of(context).pushNamed('/receivepage');
       } else {
-        Navigator.of(context).pop();
-        showSnackBar(
-            context, 'Please connect to wifi / hotspot same as that of sender');
-        await Future.delayed(
-          const Duration(seconds: 2),
-        );
-        SystemSettings.wifi();
+        if (context.mounted) {
+          Navigator.of(context).pop();
+          showSnackBar(context, 'Please connect to wifi / hotspot same as that of sender');
+          await Future.delayed(
+            const Duration(seconds: 2),
+          );
+          SystemSettings.wifi();
+        }
       }
     });
   }
@@ -26,19 +27,23 @@ class HandleShare {
   onQrScanTap() {
     getIP().then((value) async {
       if (value.isNotEmpty) {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => const QrReceivePage(),
-          ),
-        );
+        if (context.mounted) {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => const QrReceivePage(),
+            ),
+          );
+        }
       } else {
-        Navigator.of(context).pop();
-        showSnackBar(
-            context, 'Please connect to wifi / hotspot same as that of sender');
-        await Future.delayed(
-          const Duration(seconds: 2),
-        );
-        SystemSettings.wifi();
+        if (context.mounted) {
+          Navigator.of(context).pop();
+          showSnackBar(
+              context, 'Please connect to wifi / hotspot same as that of sender');
+          await Future.delayed(
+            const Duration(seconds: 2),
+          );
+          SystemSettings.wifi();
+        }
       }
     });
   }

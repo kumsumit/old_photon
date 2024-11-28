@@ -66,9 +66,7 @@ class _AppsListState extends State<AppsList> {
           builder: (context, AsyncSnapshot snap) {
             if (snap.connectionState == ConnectionState.done) {
               data = snap.data;
-              apps = isSearched
-                  ? searchData
-                  : data;
+              apps = isSearched ? searchData : data;
               //create list of bool
               List<bool> boolList = List.generate(apps.length, (i) => false);
 

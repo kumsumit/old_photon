@@ -236,7 +236,7 @@ class _ReceivePageState extends State<ReceivePage> {
                                               );
 
                                               if (resp['accepted']) {
-                                                if (mounted) {
+                                                if (mounted && context.mounted) {
                                                   Navigator.of(context).push(
                                                     MaterialPageRoute(
                                                       builder: (context) {

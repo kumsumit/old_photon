@@ -3,8 +3,8 @@ import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:hive/hive.dart';
 import 'package:lottie/lottie.dart';
+import 'package:photon/db/fastdb.dart';
 import 'package:photon/services/photon_sender.dart';
 import 'package:photon/views/apps_list.dart';
 import '../../methods/handle_share.dart';
@@ -19,7 +19,6 @@ class MobileHome extends StatefulWidget {
 class _MobileHomeState extends State<MobileHome> {
   PhotonSender photonSePhotonSender = PhotonSender();
   bool isLoading = false;
-  Box box = Hive.box('appData');
   TextEditingController rawTextController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -105,7 +104,7 @@ class _MobileHomeState extends State<MobileHome> {
                                       ? const Color.fromARGB(205, 117, 255, 122)
                                       : Colors.blue,
                                   onPressed: () async {
-                                    if (box.get('queryPackages')) {
+                                    if ( FastDB.getQueryPackages()??false) {
                                       Navigator.of(context).push(
                                           MaterialPageRoute(
                                               builder: (context) =>
@@ -127,12 +126,12 @@ class _MobileHomeState extends State<MobileHome> {
                                                 child: const Text('Go back'),
                                               ),
                                               ElevatedButton(
-                                                onPressed: () {
-                                                  box.put(
-                                                      'queryPackages', true);
-
+                                                onPressed: () async{
+                                                  FastDB.putQueryPackages(true);
+                                                  await FastDB.flush();
+                                                  if(context.mounted) {
                                                   Navigator.of(context)
-                                                      .popAndPushNamed('/apps');
+                                                      .popAndPushNamed('/apps');}
                                                 },
                                                 child: const Text('Continue'),
                                               )
@@ -149,7 +148,7 @@ class _MobileHomeState extends State<MobileHome> {
                                     children: [
                                       SvgPicture.asset(
                                         'assets/icons/android.svg',
-                                        color: Colors.black,
+                                      colorFilter: ColorFilter.mode( Colors.black, BlendMode.srcIn, ),
                                       ),
                                       const SizedBox(
                                         width: 10,

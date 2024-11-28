@@ -4,16 +4,14 @@ import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:hive/hive.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:photon/db/fastdb.dart';
 import 'package:photon/methods/share_intent.dart';
 import 'package:photon/views/apps_list.dart';
 import 'package:photon/views/handle_intent_ui.dart';
 import 'package:photon/views/drawer/history.dart';
 import 'package:photon/views/intro_page.dart';
 import 'package:photon/views/receive_ui/manual_scan.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:photon/controllers/controllers.dart';
 import 'app.dart';
 
@@ -23,17 +21,14 @@ import 'package:flutter_displaymode/flutter_displaymode.dart';
 final nav = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Hive.init((await getApplicationDocumentsDirectory()).path);
-  await Hive.openBox('appData');
-  Box box = Hive.box('appData');
-  box.get('avatarPath') ?? box.put('avatarPath', 'assets/avatars/1.png');
-  box.get('username') ?? box.put('username', '${Platform.localHostname} user');
-  box.get('queryPackages') ?? box.put('queryPackages', false);
+  await FastDB.init();
+  FastDB.getAvatarPath() ?? FastDB.putAvatarPath('assets/avatars/1.png');
+  FastDB.getUsername() ?? FastDB.putUsername('${Platform.localHostname} user');
+  FastDB.getQueryPackages() ?? FastDB.putQueryPackages(false);
+  FastDB.getIsIntroRead() ?? FastDB.putIsIntroRead(false);
+  FastDB.getIsDarkTheme() ?? FastDB.putIsDarkTheme(true);
+  await FastDB.flush();
   GetIt getIt = GetIt.instance;
-
-  SharedPreferences prefInst = await SharedPreferences.getInstance();
-  prefInst.get('isIntroRead') ?? prefInst.setBool('isIntroRead', false);
-  prefInst.get('isDarkTheme') ?? prefInst.setBool('isDarkTheme', true);
   getIt.registerSingleton<PercentageController>(PercentageController());
   getIt.registerSingleton<ReceiverDataController>(ReceiverDataController());
   getIt.registerSingleton<RawTextController>(RawTextController());
@@ -56,7 +51,7 @@ void main() async {
           subThemesData: const FlexSubThemesData(
             blendOnLevel: 30,
           ),
-          background: Colors.white,
+          surface: Colors.white,
           visualDensity: FlexColorScheme.comfortablePlatformDensity,
           useMaterial3: true,
           fontFamily: 'questrial'),
@@ -72,7 +67,7 @@ void main() async {
           visualDensity: FlexColorScheme.comfortablePlatformDensity,
           useMaterial3: true,
           fontFamily: 'questrial'),
-      initial: prefInst.getBool('isDarkTheme') == true
+      initial: FastDB.getIsDarkTheme() == true
           ? AdaptiveThemeMode.dark
           : AdaptiveThemeMode.light,
       builder: (theme, dark) {
@@ -84,7 +79,7 @@ void main() async {
           routes: {
             '/': (context) => AnimatedSplashScreen(
                   splash: 'assets/images/splash.png',
-                  nextScreen: prefInst.getBool('isIntroRead') == true
+                  nextScreen: FastDB.getIsIntroRead() == true
                       ? (externalIntent
                           ? HandleIntentUI(
                               isRawText: type == "raw_text",

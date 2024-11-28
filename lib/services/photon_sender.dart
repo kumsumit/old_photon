@@ -2,13 +2,13 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:photon/db/fastdb.dart';
 import 'package:photon/methods/methods.dart';
 import 'package:photon/models/file_model.dart';
 import 'package:photon/models/sender_model.dart';
 import 'package:photon/models/share_error_model.dart';
 import 'package:photon/views/share_ui/share_page.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
-import 'package:hive/hive.dart';
 import '../components/dialogs.dart';
 import '../components/snackbar.dart';
 import '../main.dart';
@@ -99,11 +99,8 @@ class PhotonSender {
     try {
       _server = await HttpServer.bind(_address, 4040);
       _randomSecretCode = getRandomNumber();
-      Box box = Hive.box('appData');
-      String username = box.get('username');
-      avatar =
-          (await rootBundle.load(box.get('avatarPath'))).buffer.asUint8List();
-
+      String username = FastDB.getUsername()??'';
+      avatar = (await rootBundle.load(FastDB.getAvatarPath()??'')).buffer.asUint8List();
       serverInf = {
         'ip': _server.address.address,
         'port': _server.port,

@@ -63,7 +63,7 @@ class _ProgressPageState extends State<ProgressPage> {
         ? MediaQuery.of(context).size.width / 1.8
         : MediaQuery.of(context).size.width / 1.4;
 
-    return WillPopScope(
+    return PopScope(
       child: ValueListenableBuilder(
         valueListenable: AdaptiveTheme.of(context).modeChangeNotifier,
         builder: (_, AdaptiveThemeMode mode, __) {
@@ -183,7 +183,7 @@ class _ProgressPageState extends State<ProgressPage> {
                                                                     rawTextController
                                                                         .rawText
                                                                         .value));
-                                                        if (mounted) {
+                                                        if (mounted && context.mounted) {
                                                           ScaffoldMessenger.of(
                                                                   context)
                                                               .showSnackBar(
@@ -493,7 +493,7 @@ class _ProgressPageState extends State<ProgressPage> {
                                   await FileMethods.saveTextFile(
                                       rawTextController.rawText.value,
                                       fileNameController.text);
-                                  if (mounted) {
+                                  if (mounted && context.mounted) {
                                     Navigator.of(context).pop();
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
@@ -522,9 +522,8 @@ class _ProgressPageState extends State<ProgressPage> {
           );
         },
       ),
-      onWillPop: () async {
+      onPopInvokedWithResult: (b,r) async {
         willPop = await progressPageWillPopDialog(context);
-        return willPop;
       },
     );
   }

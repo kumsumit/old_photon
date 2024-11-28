@@ -3,9 +3,9 @@ import 'package:file_picker/file_picker.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:photon/components/constants.dart';
+import 'package:photon/db/fastdb.dart';
 import 'package:photon/services/file_services.dart';
 import 'package:photon/views/drawer/edit_profile.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -15,9 +15,7 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  late SharedPreferences pref;
   _future() async {
-    pref = await SharedPreferences.getInstance();
     return await FileMethods.getSaveDirectory();
   }
 
@@ -81,18 +79,18 @@ class _SettingsPageState extends State<SettingsPage> {
                               ListTile(
                                 title: const Text('Toggle theme'),
                                 trailing: Switch(
-                                  value: pref.getBool('isDarkTheme')!,
-                                  onChanged: (val) {
+                                  value: FastDB.getIsDarkTheme() == true,
+                                  onChanged: (val) async{
                                     setState(() {
-                                      if (pref.getBool('isDarkTheme') ==
-                                          false) {
-                                        AdaptiveTheme.of(context).setDark();
-                                        pref.setBool('isDarkTheme', true);
-                                      } else {
+                                      if ( FastDB.getIsDarkTheme() == true) {
                                         AdaptiveTheme.of(context).setLight();
-                                        pref.setBool('isDarkTheme', false);
+                                        FastDB.putIsDarkTheme(false);
+                                      } else {
+                                        AdaptiveTheme.of(context).setDark();
+                                        FastDB.putIsDarkTheme(true);
                                       }
                                     });
+                                    await FastDB.flush();
                                   },
                                 ),
                               ),
@@ -106,9 +104,10 @@ class _SettingsPageState extends State<SettingsPage> {
                                   },
                                   icon: SvgPicture.asset(
                                     'assets/icons/profile_edit.svg',
-                                    color: mode.isDark
+                                    colorFilter: ColorFilter.mode(  mode.isDark
                                         ? Colors.white
-                                        : Colors.black,
+                                        : Colors.black, BlendMode.srcIn,),
+                                    
                                   ),
                                 ),
                                 title: const Text('Edit profile'),
